@@ -147,6 +147,13 @@ class Html extends BaseWriter
     private string $getFalse = 'FALSE';
 
     /**
+     * Excel sheets to be exported.
+     * 
+     * @var int[]
+     */
+    private array $sheetsToExport = [];    
+
+    /**
      * Create a new HTML.
      */
     public function __construct(Spreadsheet $spreadsheet)
@@ -415,12 +422,31 @@ class Html extends BaseWriter
         return $html;
     }
 
+    /**
+     * Set Indexes of Sheets to export in HTML and PDF.
+     *
+     * @param int[] $sheets
+     */
+    public function setSheetsToExport(array $sheets): void
+    {
+        $this->sheetIndex = null;
+        $this->sheetsToExport = $sheets;
+    }
+
     /** @return Worksheet[] */
     private function generateSheetPrep(): array
     {
         // Fetch sheets
         if ($this->sheetIndex === null) {
             $sheets = $this->spreadsheet->getAllSheets();
+
+            if (!empty($this->sheetsToExport)) {
+                $sheets = array_filter(
+                    $sheets,
+                    fn ($key) => in_array($key, $this->sheetsToExport),
+                    ARRAY_FILTER_USE_KEY
+                );
+            }
         } else {
             $sheets = [$this->spreadsheet->getSheet($this->sheetIndex)];
         }
