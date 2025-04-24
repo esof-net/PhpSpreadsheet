@@ -576,12 +576,7 @@ class Html extends BaseWriter
     public function generateNavigation(): string
     {
         // Fetch sheets
-        $sheets = [];
-        if ($this->sheetIndex === null) {
-            $sheets = $this->spreadsheet->getAllSheets();
-        } else {
-            $sheets[] = $this->spreadsheet->getSheet($this->sheetIndex);
-        }
+        $sheets = $this->generateSheetPrep();
 
         // Construct HTML
         $html = '';
@@ -1023,12 +1018,7 @@ class Html extends BaseWriter
         }
 
         // Fetch sheets
-        $sheets = [];
-        if ($this->sheetIndex === null) {
-            $sheets = $this->spreadsheet->getAllSheets();
-        } else {
-            $sheets[] = $this->spreadsheet->getSheet($this->sheetIndex);
-        }
+        $sheets = $this->generateSheetPrep();
 
         // Build styles per sheet
         foreach ($sheets as $sheet) {
@@ -2027,12 +2017,7 @@ class Html extends BaseWriter
         $this->calculateSpans();
 
         // Fetch sheets
-        $sheets = [];
-        if ($this->sheetIndex === null) {
-            $sheets = $this->spreadsheet->getAllSheets();
-        } else {
-            $sheets[] = $this->spreadsheet->getSheet($this->sheetIndex);
-        }
+        $sheets = $this->generateSheetPrep();
 
         // Construct HTML
         $htmlPage = $generateSurroundingHTML ? ('<style type="text/css">' . PHP_EOL) : '';
