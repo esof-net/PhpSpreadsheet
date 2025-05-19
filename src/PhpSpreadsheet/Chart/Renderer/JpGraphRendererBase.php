@@ -666,7 +666,9 @@ abstract class JpGraphRendererBase implements IRenderer
             $jLimit = ($multiplePlots) ? $seriesCount : 1;
             //    Loop through each data series in turn
             for ($j = 0; $j < $jLimit; ++$j) {
-                $dataValues = $this->chart->getPlotArea()->getPlotGroupByIndex($groupID)->getPlotValuesByIndex($j)->getDataValues();
+                $plotValues = $this->chart->getPlotArea()->getPlotGroupByIndex($groupID)->getPlotValuesByIndex($j);
+                $dataValues = $plotValues->getDataValues();
+                $fillColor = $plotValues->getFillColor();
 
                 //    Fill in any missing values in the $dataValues array
                 $testCurrentIndex = 0;
@@ -697,7 +699,28 @@ abstract class JpGraphRendererBase implements IRenderer
                 }
 
                 $seriesPlot->SetColor(self::$colourSet[self::$plotColour++]);
-                if (count($datasetLabels) > 0) {
+                if (count($fillColor) > 0) {
+                    $sliceColors = array_map(function($e) {
+                    return "#{$e}";
+                    }, $fillColor);
+
+                    $seriesPlot->SetSliceColors($sliceColors);
+                }
+
+                $dataLabelPercent = $plotValues->getLabelLayout()?->getShowPercent();
+                if ($dataLabelPercent == true) {
+                    $totalValue = array_sum($dataValues);
+                    $percentageLabels = [];
+                    foreach ($dataValues as $dataValue) {
+                        if ($totalValue > 0) {
+                            $percentage = ($dataValue / $totalValue) * 100;
+                            $percentageLabels[] = sprintf('%.1f', $percentage);
+                        } else {
+                            $percentageLabels[] = '0.0';
+                        }
+                    }
+                    $seriesPlot->SetLabels($percentageLabels);
+                } elseif (count($datasetLabels) > 0) {
                     $seriesPlot->SetLabels(array_fill(0, count($datasetLabels), ''));
                 }
                 if ($dimensions != '3d') {
