@@ -700,11 +700,14 @@ abstract class JpGraphRendererBase implements IRenderer
 
                 $seriesPlot->SetColor(self::$colourSet[self::$plotColour++]);
                 if (count($fillColor) > 0) {
-                    $sliceColors = array_map(function($e) {
-                    return "#{$e}";
-                    }, $fillColor);
+                    $themeColours = $this->chart->getWorksheet()->getParent()->getTheme()->getThemeColors();
+                    if (!array_key_exists(trim($fillColor[0], '*'), $themeColours)) {
+                        $sliceColors = array_map(function($e) {
+                        return "#{$e}";
+                        }, $fillColor);
 
-                    $seriesPlot->SetSliceColors($sliceColors);
+                        $seriesPlot->SetSliceColors($sliceColors);
+                    }
                 }
 
                 $dataLabelPercent = $plotValues->getLabelLayout()?->getShowPercent();
