@@ -419,7 +419,7 @@ abstract class JpGraphRendererBase implements IRenderer
                 $seriesPlot->SetShadow();
             }
 
-            $seriesPlot->SetLegend($this->getDataLabel($groupID, $j));
+            $seriesPlot->SetLegend($this->getDataLabel($groupID, $index));
 
             $seriesPlots[] = $seriesPlot;
         }
